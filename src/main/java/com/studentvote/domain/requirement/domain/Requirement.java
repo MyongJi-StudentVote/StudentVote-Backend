@@ -1,5 +1,6 @@
-package com.studentvote.domain.user.domain;
+package com.studentvote.domain.requirement.domain;
 
+import com.studentvote.domain.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class Requirement extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -20,7 +21,5 @@ public class User {
 
     private String email;
 
-    private String password;
-
-    private String name;
+    private String content;
 }
