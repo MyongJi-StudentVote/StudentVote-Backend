@@ -18,8 +18,11 @@ public class User {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    private String userId;
+    private String email;
 
     private String password;
 
+    private ROLE role;
+
+    private String name;
 }
