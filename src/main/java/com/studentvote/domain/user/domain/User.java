@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,11 +24,14 @@ public class User {
 
     private String name;
 
+    private Role role;
+
 
     private User(String email, String password, String name) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.role = Role.USER;
     }
 
     public static User of(String email, String password, String name) {
