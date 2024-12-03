@@ -2,6 +2,8 @@ package com.studentvote.global.config.security;
 
 import static org.springframework.security.config.Customizer.*;
 
+import com.studentvote.global.config.security.jwt.JWTFilter;
+import com.studentvote.global.config.security.jwt.JWTUtil;
 import com.studentvote.global.config.security.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
@@ -53,7 +56,9 @@ public class SecurityConfig {
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+        http
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
         // 세션 설정 : STATELESS
         http
                 .sessionManagement((session) -> session
