@@ -16,12 +16,16 @@ public class ElectionBasicInfo {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(length = 1000)
     private String electionCommitteeNotice;
 
+    @Column(length = 1000)
     private String electionRegulationAmendmentNotice;
 
+    @Column(length = 1000)
     private String candidateRecruitmentNotice;
 
+    @Column(length = 1000)
     private String electionRegulation;
 
 }
