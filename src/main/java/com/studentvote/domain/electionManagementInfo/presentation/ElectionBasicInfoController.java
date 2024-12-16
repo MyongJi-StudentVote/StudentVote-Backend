@@ -28,11 +28,8 @@ public class ElectionBasicInfoController {
 
     @PostMapping("/upload")
     public ResponseCustom<ElectionBasicInfoResponse> uploadElectionInfo(
-            @RequestParam("electionCommitteeNotice") MultipartFile electionCommitteeNotice,
-            @RequestParam("electionRegulationAmendmentNotice") MultipartFile electionRegulationAmendmentNotice,
-            @RequestParam("candidateRecruitmentNotice") MultipartFile candidateRecruitmentNotice,
-            @RequestParam("electionRegulation") MultipartFile electionRegulation) {
-        ElectionBasicInfoResponse electionBasicInfoResponse = electionBasicInfoService.uploadElectionInfo(electionCommitteeNotice, electionRegulationAmendmentNotice, candidateRecruitmentNotice, electionRegulation);
+            @ModelAttribute ElectionBasicInfoRequest request) {
+        ElectionBasicInfoResponse electionBasicInfoResponse = electionBasicInfoService.uploadElectionInfo(request);
         return ResponseCustom.OK(electionBasicInfoResponse);
     }
 
