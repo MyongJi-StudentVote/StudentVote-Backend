@@ -7,11 +7,14 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.studentvote.domain.electionManagementInfo.domain.ElectionBasicInfo;
 import com.studentvote.domain.electionManagementInfo.domain.repository.ElectionBasicInfoRepository;
+import com.studentvote.domain.electionManagementInfo.dto.request.ElectionBasicInfoRequest;
 import com.studentvote.domain.electionManagementInfo.dto.response.ElectionBasicInfoResponse;
 import com.studentvote.global.error.DefaultException;
 import com.studentvote.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,12 +36,13 @@ public class ElectionBasicInfoService {
 
     private final ElectionBasicInfoRepository electionBasicInfoRepository;
 
-    public ElectionBasicInfoResponse uploadElectionInfo(MultipartFile electionCommitteeNotice, MultipartFile electionRegulationAmendmentNotice, MultipartFile candidateRecruitmentNotice, MultipartFile electionRegulation) {
-        String committeeNoticeUrl = uploadImageToS3(electionCommitteeNotice);
-        String regulationAmendmentUrl = uploadImageToS3(electionRegulationAmendmentNotice);
-        String recruitmentNoticeUrl = uploadImageToS3(candidateRecruitmentNotice);
-        String regulationUrl = uploadImageToS3(electionRegulation);
-
+    @Transactional
+    public ElectionBasicInfoResponse uploadElectionInfo(ElectionBasicInfoRequest request) {
+        validateUploadRequest(request);
+        String committeeNoticeUrl = uploadImageToS3(request.electionCommitteeNotice());
+        String regulationAmendmentUrl = uploadImageToS3(request.electionRegulationAmendmentNotice());
+        String recruitmentNoticeUrl = uploadImageToS3(request.candidateRecruitmentNotice());
+        String regulationUrl = uploadImageToS3(request.electionRegulation());
         ElectionBasicInfo savedEntity = electionBasicInfoRepository.save(
                 new ElectionBasicInfo(null, committeeNoticeUrl, regulationAmendmentUrl, recruitmentNoticeUrl, regulationUrl)
         );
@@ -72,6 +76,24 @@ public class ElectionBasicInfoService {
     private String changedImageName(String originName) {
         String random = UUID.randomUUID().toString();
         return random +'-' + originName;
+    }
+
+    private void validateUploadRequest(ElectionBasicInfoRequest request) {
+        if (request == null) {
+            throw new DefaultException(ErrorCode.INVALID_PARAMETER);
+        }
+        if (request.electionCommitteeNotice() == null) {
+            throw new DefaultException(ErrorCode.INVALID_ELECTIONCOMMITTEENOTICE);
+        }
+        if (request.electionRegulationAmendmentNotice() == null) {
+            throw new DefaultException(ErrorCode.INVALID_ELECTIONREGULATIONAMENDNOTICE);
+        }
+        if (request.candidateRecruitmentNotice() == null) {
+            throw new DefaultException(ErrorCode.INVALID_CANDIDATERECUITMENTNOTICE);
+        }
+        if (request.electionRegulation() == null) {
+            throw new DefaultException(ErrorCode.INVALID_ELECTIONREGULATION);
+        }
     }
 
 }
