@@ -1,7 +1,9 @@
 package com.studentvote.domain.auth.presentation;
 
 import com.studentvote.domain.auth.application.AuthService;
+import com.studentvote.domain.auth.dto.request.SignInRequest;
 import com.studentvote.domain.auth.dto.request.SignUpRequest;
+import com.studentvote.domain.auth.dto.response.SignInResponse;
 import com.studentvote.global.payload.Message;
 import com.studentvote.global.payload.ResponseCustom;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,5 +26,11 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseCustom<Message> signUp(@RequestBody SignUpRequest signUpRequest) {
         return ResponseCustom.OK(authService.signUp(signUpRequest));
+    }
+
+    @Operation(summary = "로그인", description = "사용자가 로그인을 요청합니다.")
+    @PostMapping("/sign-in")
+    public ResponseCustom<SignInResponse> signIn(@RequestBody SignInRequest signInRequest) {
+        return ResponseCustom.OK(authService.signIn(signInRequest));
     }
 }
