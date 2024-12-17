@@ -1,5 +1,7 @@
 package com.studentvote.domain.auth.application;
 
+import com.studentvote.domain.auth.domain.Token;
+import com.studentvote.domain.auth.domain.repository.TokenRepository;
 import com.studentvote.domain.auth.dto.request.SignInRequest;
 import com.studentvote.domain.auth.dto.request.SignUpRequest;
 import com.studentvote.domain.auth.dto.response.SignInResponse;
@@ -29,6 +31,7 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final TokenRepository tokenRepository;
 
     private final JWTUtil jwtUtil;
 
@@ -77,6 +80,8 @@ public class AuthService {
 
         String accessToken = jwtUtil.createJwt(email, role.toString(), 36000000000L);
         String refreshToken = jwtUtil.createJwt(email, role.toString(), 360000000000L);
+
+        tokenRepository.save(Token.builder().email(email).refreshToken(refreshToken).build());
 
         SignInResponse signInResponse = SignInResponse
                 .builder()
