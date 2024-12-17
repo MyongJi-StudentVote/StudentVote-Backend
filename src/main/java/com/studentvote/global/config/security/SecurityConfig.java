@@ -55,10 +55,12 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
+//        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
+//        loginFilter.setFilterProcessesUrl("/api/v1/auth/sign-in"); // 로그인 URL 설정
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-        http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//        http
+//                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
         // 세션 설정 : STATELESS
         http
                 .sessionManagement((session) -> session

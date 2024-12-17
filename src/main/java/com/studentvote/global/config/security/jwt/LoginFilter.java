@@ -1,6 +1,11 @@
 package com.studentvote.global.config.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.studentvote.domain.auth.dto.request.SignInRequest;
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
+import com.studentvote.domain.auth.dto.response.SignInResponse;
+import com.studentvote.global.payload.Message;
+import com.studentvote.global.payload.ResponseCustom;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,16 +27,24 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
 
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
+        try {
+            SignInRequest signInRequest = new ObjectMapper().readValue(request.getInputStream(), SignInRequest.class);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                username, password, null);
+            String username = signInRequest.email();
+            String password = signInRequest.password();
 
-        return authenticationManager.authenticate(authToken);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    username, password, null);
+
+            return authenticationManager.authenticate(authToken);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to parse login request", e);
+        }
     }
 
     @Override
@@ -47,14 +60,30 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
+        String accessToken = jwtUtil.createJwt(username, role, 36000000000L);
+        String refreshToken = jwtUtil.createJwt(username, role, 360000000000L);
 
-        response.addHeader("Authorization", "Bearer " + token);
+        SignInResponse signInResponse = SignInResponse
+                .builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .role(customUserDetails.user().getRole())
+                .build();
+
+        ResponseCustom<SignInResponse> responseCustom = ResponseCustom.OK(signInResponse);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        new ObjectMapper().writeValue(response.getWriter(), responseCustom);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
-        response.setStatus(401);
+        ResponseCustom<Message> responseCustom = ResponseCustom.OK(Message.builder().message("로그인에 실패했습니다.").build());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        new ObjectMapper().writeValue(response.getWriter(), responseCustom);
     }
 }
