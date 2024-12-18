@@ -49,5 +49,9 @@ public class JWTFilter extends OncePerRequestFilter {
                 customUserDetails, null, customUserDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        System.out.println("Authentication set in SecurityContextHolder: " + SecurityContextHolder.getContext().getAuthentication());
+
+        filterChain.doFilter(request, response);
     }
 }
