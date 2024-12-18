@@ -22,7 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new EmailNotFoundException());
 
 
-
         if (user != null) {
             return new CustomUserDetails(user);
         }
