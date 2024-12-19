@@ -36,4 +36,13 @@ public class AdminController {
     ) {
         return ResponseCustom.OK(adminService.admitUser(userDetails, userId));
     }
+
+    @Operation(summary = "가입 거절", description = "가입 대기중인 선택한 유저에 대한 가입을 거절합니다.")
+    @PostMapping("/deny/{userId}")
+    public ResponseCustom<Message> denyUser(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long userId
+    ) {
+        return ResponseCustom.OK(adminService.denyUser(userDetails, userId));
+    }
 }
