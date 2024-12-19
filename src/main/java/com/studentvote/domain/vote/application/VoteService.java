@@ -12,11 +12,14 @@ import com.studentvote.domain.vote.domain.repository.VoteInformationRepository;
 import com.studentvote.domain.vote.domain.repository.VoteRepository;
 import com.studentvote.domain.vote.dto.request.CreateVoteRequest;
 import com.studentvote.domain.vote.dto.request.RegisterVoteRateRequest;
+import com.studentvote.domain.vote.dto.response.GetRateResponse;
 import com.studentvote.domain.vote.exception.AlreadyExistVoteInformationException;
 import com.studentvote.global.config.s3.S3Service;
 import com.studentvote.global.payload.Message;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,7 +93,9 @@ public class VoteService {
     public Message registerVoteRate(CustomUserDetails userDetails, Long departmentId,
                                     RegisterVoteRateRequest registerVoteRateRequest) {
 
-        User user = userRepository.findByUsername(userDetails.getUsername())
+        System.out.println("userDetails.user().getEmail() = " + userDetails.user().getEmail());
+
+        User user = userRepository.findByEmail(userDetails.user().getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 유저입니다."));
 
         Governance governance = governanceRepository.findById(departmentId)
@@ -105,5 +110,15 @@ public class VoteService {
                 .builder()
                 .message("저장이 완료되었습니다.")
                 .build();
+    }
+
+    public Page<GetRateResponse> getRate(Long departmentId, Pageable pageable) {
+
+        Governance governance = governanceRepository.findById(departmentId)
+                .orElseThrow(() -> new NullPointerException("해당 학과/단과대를 찾을 수 없습니다."));
+
+        Page<GetRateResponse> getRateResponses = voteRepository.findAllByGovernance(governance, pageable);
+
+        return getRateResponses;
     }
 }
