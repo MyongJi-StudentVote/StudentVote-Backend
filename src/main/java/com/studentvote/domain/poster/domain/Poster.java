@@ -24,7 +24,7 @@ public class Poster {
     @Column(length = 1000)
     private String posterImage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
