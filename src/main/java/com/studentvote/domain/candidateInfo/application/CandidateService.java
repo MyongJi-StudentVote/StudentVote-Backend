@@ -52,6 +52,7 @@ public class CandidateService {
                 candidateInfoList.stream()
                         .map(candidateInfo -> new CandidateInfoListResponse.CandidateInfoResponse(
                                 candidateInfo.getId(),
+                                candidateInfo.getElectionType(),
                                 candidateInfo.getCandidateName(),
                                 candidateInfo.getCandidateContactAddress(),
                                 candidateInfo.getCandidateInfoImage(),
