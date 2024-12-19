@@ -1,13 +1,10 @@
-package com.studentvote.domain.poster.application;
+package com.studentvote.domain.candidateInfo.application;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
-import com.studentvote.domain.electionManagementInfo.dto.request.ElectionBasicInfoRequest;
-import com.studentvote.domain.poster.domain.ElectionType;
-import com.studentvote.domain.poster.domain.Poster;
-import com.studentvote.domain.poster.domain.PosterRepository;
-import com.studentvote.domain.poster.dto.request.RegisterPosterRequest;
-import com.studentvote.domain.poster.dto.response.RegisterPosterResponse;
+import com.studentvote.domain.candidateInfo.domain.CandidateInfo;
+import com.studentvote.domain.candidateInfo.domain.CandidateInfoRepository;
+import com.studentvote.domain.candidateInfo.dto.request.RegisterCandidateInfoRequest;
+import com.studentvote.domain.candidateInfo.dto.response.RegisterCandidateInfoResponse;
 import com.studentvote.domain.user.domain.ApprovalStatus;
 import com.studentvote.domain.user.domain.User;
 import com.studentvote.global.config.s3.S3Service;
@@ -16,19 +13,16 @@ import com.studentvote.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class PosterService {
+public class CandidateService {
 
-    private final PosterRepository posterRepository;
+    private final CandidateInfoRepository candidateInfoRepository;
     private final S3Service s3Service;
 
     @Transactional
-    public RegisterPosterResponse registerPoster(CustomUserDetails userDetails, RegisterPosterRequest request) {
+    public RegisterCandidateInfoResponse registerCandidate(CustomUserDetails userDetails, RegisterCandidateInfoRequest request) {
         validateUploadRequest(request);
         User user = userDetails.user();
         if (user.getApprovalStatus() != ApprovalStatus.APPROVED) {
@@ -38,8 +32,8 @@ public class PosterService {
         String logoInfoImageName = makeFileName(user, "logoInfoImage");
         String candidateInfoImageUrl = s3Service.uploadImageToS3(request.candidateInfoImage(), candidateInfoImageName);
         String logoImageUrl = s3Service.uploadImageToS3(request.logoImage(), logoInfoImageName);
-        Poster save = posterRepository.save(new Poster(null, request.candidateName(), request.candidateContactAddress(), candidateInfoImageUrl, logoImageUrl, request.electionType(), user));
-        return new RegisterPosterResponse(save.getId());
+        CandidateInfo save = candidateInfoRepository.save(new CandidateInfo(null, request.candidateName(), request.candidateContactAddress(), candidateInfoImageUrl, logoImageUrl, request.electionType(), user));
+        return new RegisterCandidateInfoResponse(save.getId());
     }
 
     private String makeFileName(User user, String option) {
@@ -52,7 +46,7 @@ public class PosterService {
         return fileName;
     }
 
-    private void validateUploadRequest(RegisterPosterRequest request) {
+    private void validateUploadRequest(RegisterCandidateInfoRequest request) {
         if (request == null) {
             throw new DefaultException(ErrorCode.INVALID_PARAMETER);
         }

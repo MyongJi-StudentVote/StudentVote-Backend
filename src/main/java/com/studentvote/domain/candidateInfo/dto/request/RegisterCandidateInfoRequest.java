@@ -1,9 +1,9 @@
-package com.studentvote.domain.poster.dto.request;
+package com.studentvote.domain.candidateInfo.dto.request;
 
-import com.studentvote.domain.poster.domain.ElectionType;
+import com.studentvote.domain.candidateInfo.domain.ElectionType;
 import org.springframework.web.multipart.MultipartFile;
 
-public record RegisterPosterRequest(
+public record RegisterCandidateInfoRequest(
 
         ElectionType electionType,
         String candidateName,

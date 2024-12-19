@@ -1,4 +1,4 @@
-package com.studentvote.domain.poster.domain;
+package com.studentvote.domain.candidateInfo.domain;
 
 import com.studentvote.domain.common.BaseEntity;
 import com.studentvote.domain.user.domain.User;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Poster extends BaseEntity {
+public class CandidateInfo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
