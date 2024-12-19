@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+
 public interface CandidateInfoRepository extends JpaRepository<CandidateInfo, Long> {
 
     @Query("select c from CandidateInfo c " +
