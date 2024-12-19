@@ -4,6 +4,7 @@ import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.candidateInfo.domain.CandidateInfo;
 import com.studentvote.domain.candidateInfo.domain.CandidateInfoRepository;
 import com.studentvote.domain.candidateInfo.dto.request.RegisterCandidateInfoRequest;
+import com.studentvote.domain.candidateInfo.dto.response.CandidateInfoListResponse;
 import com.studentvote.domain.candidateInfo.dto.response.RegisterCandidateInfoResponse;
 import com.studentvote.domain.user.domain.ApprovalStatus;
 import com.studentvote.domain.user.domain.User;
@@ -13,6 +14,9 @@ import com.studentvote.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +40,24 @@ public class CandidateService {
         return new RegisterCandidateInfoResponse(save.getId());
     }
 
+
+    public CandidateInfoListResponse getCandidateInfo(CustomUserDetails userDetails,String governanceType) {
+        User user = userDetails.user();
+        List<CandidateInfo> candidateInfoList = candidateInfoRepository
+                .findAllCandidateByGovernanceType(user.getId(), governanceType);
+
+        List<CandidateInfoListResponse.CandidateInfoResponse> candidateInfoResponseList =
+                candidateInfoList.stream()
+                        .map(candidateInfo -> new CandidateInfoListResponse.CandidateInfoResponse(
+                                candidateInfo.getCandidateName(),
+                                candidateInfo.getCandidateContactAddress(),
+                                candidateInfo.getCandidateInfoImage(),
+                                candidateInfo.getLogoImage()
+                        ))
+                        .toList();
+        return new CandidateInfoListResponse(candidateInfoResponseList);
+    }
+
     private String makeFileName(User user, String option) {
         String fileName = "candidateInfo/" + user.getId() + "/";
         if (option.equals("candidateInfoImage")) {
@@ -57,4 +79,6 @@ public class CandidateService {
             throw new DefaultException(ErrorCode.INVALID_LOGO_IMAGE);
         }
     }
+
+
 }
