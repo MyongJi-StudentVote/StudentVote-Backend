@@ -4,6 +4,8 @@ import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.poster.application.PosterService;
 import com.studentvote.domain.poster.domain.Poster;
 import com.studentvote.domain.poster.dto.request.RegisterPosterRequest;
+import com.studentvote.domain.poster.dto.response.GetAllPosterResponse;
+import com.studentvote.domain.poster.dto.response.GetPosterResponse;
 import com.studentvote.domain.poster.dto.response.RegisterPosterResponse;
 import com.studentvote.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
@@ -28,4 +30,17 @@ public class PosterController {
         Poster poster = posterService.deletePoster(userDetails, posterId);
         return ResponseCustom.OK(poster.getPosterName());
     }
+
+    @GetMapping("/poster/{posterId}")
+    public ResponseCustom<?> getPosterByPosterId(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long posterId) {
+        Poster poster = posterService.getPosterById(userDetails, posterId);
+        return ResponseCustom.OK(new GetPosterResponse(poster.getId(), poster.getPosterName(), poster.getPosterImage()));
+    }
+
+    @GetMapping("/poster/governance/{governanceType}")
+    public ResponseCustom<GetAllPosterResponse> getAllPosterByGovernance(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable String governanceType) {
+        GetAllPosterResponse posterList = posterService.getAllPosterByGovernance(userDetails, governanceType);
+        return ResponseCustom.OK(posterList);
+    }
+
 }

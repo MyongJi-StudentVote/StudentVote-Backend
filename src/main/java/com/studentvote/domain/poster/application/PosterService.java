@@ -1,9 +1,12 @@
 package com.studentvote.domain.poster.application;
 
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
+import com.studentvote.domain.candidateInfo.domain.CandidateInfoRepository;
 import com.studentvote.domain.poster.domain.Poster;
 import com.studentvote.domain.poster.domain.repository.PosterRepository;
 import com.studentvote.domain.poster.dto.request.RegisterPosterRequest;
+import com.studentvote.domain.poster.dto.response.GetAllPosterResponse;
+import com.studentvote.domain.poster.dto.response.GetPosterResponse;
 import com.studentvote.domain.user.domain.ApprovalStatus;
 import com.studentvote.domain.user.domain.User;
 import com.studentvote.global.config.s3.S3Service;
@@ -13,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -43,6 +48,26 @@ public class PosterService {
         s3Service.deleteImageFromS3(poster.getPosterImage());
         posterRepository.delete(poster);
         return poster;
+    }
+
+    @Transactional(readOnly = true)
+    public Poster getPosterById(CustomUserDetails userDetails, Long postId) {
+        Poster poster = posterRepository.findById(postId).orElseThrow(() -> new DefaultException(ErrorCode.POSTER_NOT_FOUND));
+        return poster;
+    }
+
+    @Transactional(readOnly = true)
+    public GetAllPosterResponse getAllPosterByGovernance(CustomUserDetails userDetails, String governanceType) {
+        List<Poster> posterList = posterRepository.findAllByGovernance(governanceType);
+        List<GetAllPosterResponse.PosterResponse> list = posterList.stream().map(poster -> new GetAllPosterResponse.PosterResponse(
+                        poster.getId(),
+                        poster.getPosterName(),
+                        poster.getPosterImage(),
+                        poster.getUser().getId(),
+                        poster.getUser().getCandidateInfo().getCandidateName()
+                        ))
+                .toList();
+        return new GetAllPosterResponse(list);
     }
 
     private String makeFileName(User user, MultipartFile image) {
