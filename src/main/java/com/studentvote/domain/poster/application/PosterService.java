@@ -1,7 +1,5 @@
 package com.studentvote.domain.poster.application;
 
-
-import com.amazonaws.services.s3.AmazonS3;
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.poster.domain.Poster;
 import com.studentvote.domain.poster.domain.repository.PosterRepository;
@@ -11,7 +9,6 @@ import com.studentvote.domain.user.domain.User;
 import com.studentvote.global.config.s3.S3Service;
 import com.studentvote.global.error.DefaultException;
 import com.studentvote.global.payload.ErrorCode;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
