@@ -39,7 +39,6 @@ public class S3Service {
 
             amazonS3.putObject(
                     new PutObjectRequest(bucket, fileName, image.getInputStream(), metadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead)
             );
             return amazonS3.getUrl(bucket, fileName).toString();
         } catch (IOException e) {
@@ -55,7 +54,6 @@ public class S3Service {
 
             amazonS3.putObject(
                     new PutObjectRequest(bucket, fileName, image.getInputStream(), metadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead)
             );
             return amazonS3.getUrl(bucket, fileName).toString();
         } catch (IOException e) {
