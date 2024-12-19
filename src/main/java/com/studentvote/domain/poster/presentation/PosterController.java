@@ -8,10 +8,7 @@ import com.studentvote.domain.poster.dto.response.RegisterPosterResponse;
 import com.studentvote.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api")
 @RequiredArgsConstructor
@@ -25,5 +22,10 @@ public class PosterController {
         Poster poster = posterService.registerPoster(userDetails, request);
         return ResponseCustom.OK(new RegisterPosterResponse(poster.getId(), poster.getPosterName(), poster.getPosterImage()));
     }
-    
+
+    @DeleteMapping("poster/{posterId}")
+    public ResponseCustom<?> deletePoster(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long posterId) {
+        Poster poster = posterService.deletePoster(userDetails, posterId);
+        return ResponseCustom.OK(poster.getPosterName());
+    }
 }
