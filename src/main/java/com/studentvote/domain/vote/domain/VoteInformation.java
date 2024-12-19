@@ -19,11 +19,23 @@ public class VoteInformation extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    private String information;
+    private String name;
 
     private String dateTime;
 
-    private String location;
+    private String description;
 
-    private String prerequisite;
+    private String guideImageUrl;
+
+
+    public VoteInformation(String name, String dateTime, String description, String guideImageUrl) {
+        this.name = name;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.guideImageUrl = guideImageUrl;
+    }
+
+    public static VoteInformation of(String name, String dateTime, String description, String guideImageUrl) {
+        return new VoteInformation(name, dateTime, description, guideImageUrl);
+    }
 }

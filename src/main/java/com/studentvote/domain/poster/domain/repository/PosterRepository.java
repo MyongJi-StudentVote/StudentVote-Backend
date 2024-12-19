@@ -15,4 +15,5 @@ public interface PosterRepository extends JpaRepository<Poster, Long> {
             "JOIN Governance g ON g.user.id = u.id " +
             "WHERE g.governanceType = :governanceType")
     List<Poster> findAllByGovernance(@Param("governanceType") String governanceType);
+
 }
