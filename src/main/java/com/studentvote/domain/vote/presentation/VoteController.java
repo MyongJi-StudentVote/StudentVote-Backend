@@ -5,6 +5,7 @@ import com.studentvote.domain.vote.application.VoteService;
 import com.studentvote.domain.vote.dto.request.CreateVoteRequest;
 import com.studentvote.domain.vote.dto.request.RegisterVoteRateRequest;
 import com.studentvote.domain.vote.dto.response.GetRateResponse;
+import com.studentvote.domain.vote.dto.response.GetResultResponse;
 import com.studentvote.global.payload.Message;
 import com.studentvote.global.payload.ResponseCustom;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Vote", description = "Vote API")
 @RestController
@@ -62,5 +65,20 @@ public class VoteController {
             @PageableDefault(size = 10, page = 0) Pageable pageable
     ) {
         return ResponseCustom.OK(voteService.getRate(departmentId, pageable));
+    }
+
+    @Operation(summary = "개표 결과 등록", description = "각 단과대/학과 별로 개표 결과를 등록합니다.")
+    @PostMapping("/result")
+    public ResponseCustom<Message> postResult(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestPart("file") MultipartFile file
+    ) {
+        return ResponseCustom.OK(voteService.postResult(userDetails, file));
+    }
+
+    @Operation(summary = "개표 결과 조회", description = "각 단과대/학과 별 개표 결과를 조회합니다.")
+    @GetMapping("/result/{governanceId}")
+    public ResponseCustom<GetResultResponse> getResult(@PathVariable Long governanceId) {
+        return ResponseCustom.OK(voteService.getResult(governanceId));
     }
 }
