@@ -1,6 +1,6 @@
 package com.studentvote.domain.candidateInfo.dto.response;
-
 import com.studentvote.domain.candidateInfo.domain.ElectionType;
+
 import lombok.Builder;
 
 import java.util.List;

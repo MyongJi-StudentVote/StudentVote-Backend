@@ -69,4 +69,5 @@ public class S3Service {
             throw new RuntimeException("Image delete failed", e);
         }
     }
+
 }
