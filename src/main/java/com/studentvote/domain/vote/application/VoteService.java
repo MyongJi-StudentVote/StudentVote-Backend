@@ -1,9 +1,11 @@
 package com.studentvote.domain.vote.application;
 
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
+import com.studentvote.domain.common.Status;
 import com.studentvote.domain.vote.domain.VoteInformation;
 import com.studentvote.domain.vote.domain.repository.VoteInformationRepository;
 import com.studentvote.domain.vote.dto.request.CreateVoteRequest;
+import com.studentvote.domain.vote.exception.AlreadyExistVoteInformationException;
 import com.studentvote.global.config.s3.S3Service;
 import com.studentvote.global.payload.Message;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,12 @@ public class VoteService {
 
         if (!userDetails.getUsername().equals(MASTER_USERNAME)) {
             throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+
+        Boolean existsByStatus = voteInformationRepository.ExistsByStatus(Status.ACTIVE);
+
+        if (existsByStatus) {
+            throw new AlreadyExistVoteInformationException();
         }
 
         String image = s3Service.uploadImageToS3(createVoteRequest.file());
