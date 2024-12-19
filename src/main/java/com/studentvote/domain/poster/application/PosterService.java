@@ -33,6 +33,18 @@ public class PosterService {
         return poster;
     }
 
+    @Transactional
+    public Poster deletePoster(CustomUserDetails userDetails, Long posterId) {
+        User user = userDetails.user();
+        Poster poster = posterRepository.findById(posterId).orElseThrow(() -> new DefaultException(ErrorCode.POSTER_NOT_FOUND));
+        if (!poster.getUser().getId().equals(user.getId())) {
+            throw new DefaultException(ErrorCode.POSTER_ACCESS_DENIED);
+        }
+        s3Service.deleteImageFromS3(poster.getPosterImage());
+        posterRepository.delete(poster);
+        return poster;
+    }
+
     private String makeFileName(User user, MultipartFile image) {
         String originName = image.getOriginalFilename();
         String ext = originName.substring(originName.lastIndexOf("."));
