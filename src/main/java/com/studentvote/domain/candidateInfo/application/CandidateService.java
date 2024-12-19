@@ -37,7 +37,7 @@ public class CandidateService {
     }
 
     private String makeFileName(User user, String option) {
-        String fileName = "posters/" + user.getId() + "/";
+        String fileName = "candidateInfo/" + user.getId() + "/";
         if (option.equals("candidateInfoImage")) {
             fileName += "candidateInfoImage";
         } else if (option.equals("logoInfoImage")) {
