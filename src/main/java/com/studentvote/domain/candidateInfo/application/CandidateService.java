@@ -40,11 +40,13 @@ public class CandidateService {
         return new RegisterCandidateInfoResponse(save.getId());
     }
 
-
+    @Transactional(readOnly = true)
     public CandidateInfoListResponse getCandidateInfo(CustomUserDetails userDetails,String governanceType) {
         User user = userDetails.user();
         List<CandidateInfo> candidateInfoList = candidateInfoRepository
                 .findAllCandidateByGovernanceType(user.getId(), governanceType);
+
+        if (candidateInfoList.isEmpty()) throw new DefaultException(ErrorCode.CANDIDATE_INFO_NOT_FOUND);
 
         List<CandidateInfoListResponse.CandidateInfoResponse> candidateInfoResponseList =
                 candidateInfoList.stream()
