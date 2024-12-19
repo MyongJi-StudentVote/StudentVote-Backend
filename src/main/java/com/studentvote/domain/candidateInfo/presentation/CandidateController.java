@@ -20,7 +20,7 @@ public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @PostMapping("/poster/")
+    @PostMapping("/candidateInfo/")
     public ResponseCustom<RegisterCandidateInfoResponse> registerPoster(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute RegisterCandidateInfoRequest request) {
         RegisterCandidateInfoResponse registerCandidateInfoResponse = candidateService.registerCandidate(userDetails, request);
         return ResponseCustom.OK(registerCandidateInfoResponse);
