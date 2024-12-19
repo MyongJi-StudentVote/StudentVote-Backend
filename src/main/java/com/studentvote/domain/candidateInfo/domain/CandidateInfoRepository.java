@@ -9,9 +9,10 @@ import java.util.List;
 public interface CandidateInfoRepository extends JpaRepository<CandidateInfo, Long> {
 
     @Query("select c from CandidateInfo c " +
-            "join Governance g on g.user.id = c.user.id " +
-            "where c.user.id = :userId " +
-            "and g.governanceType = :governanceType ")
+            "join c.user u " +
+            "join u.governance g " +
+            "where u.id = :userId " +
+            "and g.governanceType = :governanceType")
     List<CandidateInfo> findAllCandidateByGovernanceType(@Param("userId") Long userId, @Param("governanceType") String governanceType);
 
 }
