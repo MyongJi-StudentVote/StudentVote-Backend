@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface PosterRepository extends JpaRepository<Poster, Long> {
 
-    @Query("select p from Poster p " +
-            "join p.user u " +
-            "join Governance g on g.user.id = p.user.id " +
-            "where g.governanceType = :governanceType")
+    @Query("SELECT p FROM Poster p " +
+            "JOIN FETCH p.user u " +
+            "JOIN Governance g ON g.user.id = u.id " +
+            "WHERE g.governanceType = :governanceType")
     List<Poster> findAllByGovernance(@Param("governanceType") String governanceType);
 }
