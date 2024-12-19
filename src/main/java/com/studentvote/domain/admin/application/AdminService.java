@@ -1,6 +1,7 @@
 package com.studentvote.domain.admin.application;
 
 import com.studentvote.domain.admin.dto.response.AccountsWaitingForApprovalResponse;
+import com.studentvote.domain.admin.exception.AlreadyApprovedUser;
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.user.domain.ApprovalStatus;
 import com.studentvote.domain.user.domain.User;
@@ -63,6 +64,27 @@ public class AdminService {
 
         return Message.builder()
                 .message("해당 유저의 승인이 완료되었습니다.")
+                .build();
+    }
+
+    @Transactional
+    public Message denyUser(CustomUserDetails userDetails, Long userId) throws AlreadyApprovedUser {
+
+        if (!userDetails.getUsername().equals(MASTER_USERNAME)) {
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        if (user.getApprovalStatus() == ApprovalStatus.APPROVED) {
+            throw new AlreadyApprovedUser();
+        }
+
+        user.updateApprovalStatus(ApprovalStatus.REJECTED);
+
+        return Message.builder()
+                .message("해당 유저의 승인이 거절되었습니다.")
                 .build();
     }
 }
