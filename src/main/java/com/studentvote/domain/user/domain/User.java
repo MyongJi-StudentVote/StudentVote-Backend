@@ -47,19 +47,20 @@ public class User extends BaseEntity {
     private Governance governance;
 
 
-    private User(String email, String password, String name) {
+    private User(String email, String password, String name, Governance governance) {
         this.email = email;
         this.password = password;
         this.username = name;
         this.role = Role.USER;
         this.approvalStatus = ApprovalStatus.PENDING;
+        this.governance = governance;
     }
 
     public void updateApprovalStatus(ApprovalStatus approvalStatus) {
         this.approvalStatus = approvalStatus;
     }
 
-    public static User of(String email, String password, String name) {
-        return new User(email, password, name);
+    public static User of(String email, String password, String name, Governance governance) {
+        return new User(email, password, name, governance);
     }
 }

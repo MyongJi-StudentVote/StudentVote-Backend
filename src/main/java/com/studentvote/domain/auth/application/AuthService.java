@@ -8,8 +8,10 @@ import com.studentvote.domain.auth.dto.response.SignInResponse;
 import com.studentvote.domain.auth.exception.AlreadyExistIdException;
 import com.studentvote.domain.auth.exception.EmailNotFoundException;
 import com.studentvote.domain.auth.exception.InvalidPasswordException;
+import com.studentvote.domain.user.domain.Governance;
 import com.studentvote.domain.user.domain.Role;
 import com.studentvote.domain.user.domain.User;
+import com.studentvote.domain.user.domain.repository.GovernanceRepository;
 import com.studentvote.domain.user.domain.repository.UserRepository;
 import com.studentvote.global.config.security.jwt.JWTUtil;
 import com.studentvote.global.payload.Message;
@@ -32,6 +34,7 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
+    private final GovernanceRepository governanceRepository;
 
     private final JWTUtil jwtUtil;
 
@@ -40,6 +43,10 @@ public class AuthService {
         String email = signUpRequest.email();
         String password = signUpRequest.password();
         String name = signUpRequest.name();
+        Long governanceId = signUpRequest.governanceId();
+
+        Governance governance = governanceRepository.findById(governanceId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 단과대/학과 id 입니다."));
 
         Boolean isExist = userRepository.existsByEmail(email);
 
@@ -47,7 +54,7 @@ public class AuthService {
             throw new AlreadyExistIdException();
         }
 
-        User user = User.of(email, bCryptPasswordEncoder.encode(password), name);
+        User user = User.of(email, bCryptPasswordEncoder.encode(password), name, governance);
 
         userRepository.save(user);
 
