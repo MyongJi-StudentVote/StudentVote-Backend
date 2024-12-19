@@ -2,10 +2,16 @@ package com.studentvote.domain.vote.application;
 
 import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.common.Status;
+import com.studentvote.domain.user.domain.Governance;
+import com.studentvote.domain.user.domain.User;
+import com.studentvote.domain.user.domain.repository.GovernanceRepository;
+import com.studentvote.domain.user.domain.repository.UserRepository;
+import com.studentvote.domain.vote.domain.Vote;
 import com.studentvote.domain.vote.domain.VoteInformation;
 import com.studentvote.domain.vote.domain.repository.VoteInformationRepository;
 import com.studentvote.domain.vote.domain.repository.VoteRepository;
 import com.studentvote.domain.vote.dto.request.CreateVoteRequest;
+import com.studentvote.domain.vote.dto.request.RegisterVoteRateRequest;
 import com.studentvote.domain.vote.exception.AlreadyExistVoteInformationException;
 import com.studentvote.global.config.s3.S3Service;
 import com.studentvote.global.payload.Message;
@@ -25,6 +31,8 @@ public class VoteService {
 
     private final VoteInformationRepository voteInformationRepository;
     private final VoteRepository voteRepository;
+    private final GovernanceRepository governanceRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Message createVote(CustomUserDetails userDetails, CreateVoteRequest createVoteRequest) {
@@ -75,6 +83,27 @@ public class VoteService {
         return Message
                 .builder()
                 .message("선거 데이터를 초기화했습니다.")
+                .build();
+    }
+
+    @Transactional
+    public Message registerVoteRate(CustomUserDetails userDetails, Long departmentId,
+                                    RegisterVoteRateRequest registerVoteRateRequest) {
+
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 유저입니다."));
+
+        Governance governance = governanceRepository.findById(departmentId)
+                .orElseThrow(() -> new NullPointerException("해당 학과/단과대를 찾을 수 없습니다."));
+
+        if (user.getId().equals(user.getGovernance().getVoteHeadquaterUserId()) && user.getGovernance().getId().equals(departmentId)) {
+            Vote vote = Vote.of(registerVoteRateRequest.voteCount(), registerVoteRateRequest.voteRate(), governance);
+            voteRepository.save(vote);
+        }
+
+        return Message
+                .builder()
+                .message("저장이 완료되었습니다.")
                 .build();
     }
 }
