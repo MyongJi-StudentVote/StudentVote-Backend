@@ -2,20 +2,15 @@ package com.studentvote.domain.poster.domain;
 
 import com.studentvote.domain.common.BaseEntity;
 import com.studentvote.domain.user.domain.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Poster extends BaseEntity {
     @Id
@@ -23,13 +18,18 @@ public class Poster extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    private String candidateStatement;
+    private String candidateName;
 
-    private String PledgeBook;
+    private String candidateContactAddress;
 
-    private String AnnualPlan;
+    @Column(length = 1000)
+    private String candidateInfoImage;
 
-    private String ElectionVideo;
+    @Column(length = 1000)
+    private String logoImage;
+
+    @Enumerated(EnumType.STRING)
+    private ElectionType electionType;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
