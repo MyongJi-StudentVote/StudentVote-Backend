@@ -1,4 +1,9 @@
 package com.studentvote.domain.poster.dto.response;
 
-public class RegisterPosterResponse {
+public record RegisterPosterResponse(
+        Long posterId,
+        String posterName,
+        String posterImageUrl
+
+) {
 }
