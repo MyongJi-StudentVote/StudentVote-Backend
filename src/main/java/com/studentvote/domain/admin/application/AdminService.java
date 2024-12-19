@@ -42,7 +42,7 @@ public class AdminService {
                 .map(user -> new AccountsWaitingForApprovalResponse(
                         user.getId(),
                         user.getUsername(),
-                        "",
+                        user.getGovernance().getGovernanceName().isEmpty() ? user.getGovernance().getGovernanceType() : user.getGovernance().getGovernanceName(),
                         user.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
