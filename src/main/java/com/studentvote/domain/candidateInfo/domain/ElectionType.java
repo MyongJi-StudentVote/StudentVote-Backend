@@ -1,4 +1,4 @@
-package com.studentvote.domain.poster.domain;
+package com.studentvote.domain.candidateInfo.domain;
 
 public enum ElectionType {
     UNCONTESTED_ELECTION,
