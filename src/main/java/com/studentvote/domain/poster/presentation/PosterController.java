@@ -4,14 +4,13 @@ import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.poster.application.PosterService;
 import com.studentvote.domain.poster.domain.Poster;
 import com.studentvote.domain.poster.dto.request.RegisterPosterRequest;
+import com.studentvote.domain.poster.dto.response.GetAllPosterResponse;
+import com.studentvote.domain.poster.dto.response.GetPosterResponse;
 import com.studentvote.domain.poster.dto.response.RegisterPosterResponse;
 import com.studentvote.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("api")
 @RequiredArgsConstructor
@@ -25,5 +24,23 @@ public class PosterController {
         Poster poster = posterService.registerPoster(userDetails, request);
         return ResponseCustom.OK(new RegisterPosterResponse(poster.getId(), poster.getPosterName(), poster.getPosterImage()));
     }
-    
+
+    @DeleteMapping("poster/{posterId}")
+    public ResponseCustom<?> deletePoster(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long posterId) {
+        Poster poster = posterService.deletePoster(userDetails, posterId);
+        return ResponseCustom.OK(poster.getPosterName());
+    }
+
+    @GetMapping("/poster/{posterId}")
+    public ResponseCustom<?> getPosterByPosterId(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long posterId) {
+        Poster poster = posterService.getPosterById(userDetails, posterId);
+        return ResponseCustom.OK(new GetPosterResponse(poster.getId(), poster.getPosterName(), poster.getPosterImage()));
+    }
+
+    @GetMapping("/poster/{governanceType}")
+    public ResponseCustom<GetAllPosterResponse> getAllPosterByGovernance(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable String governanceType) {
+        GetAllPosterResponse posterList = posterService.getAllPosterByGovernance(userDetails, governanceType);
+        return ResponseCustom.OK(posterList);
+    }
+
 }

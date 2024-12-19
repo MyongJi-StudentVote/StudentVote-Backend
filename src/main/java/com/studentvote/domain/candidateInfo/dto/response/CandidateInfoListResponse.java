@@ -11,6 +11,7 @@ public record CandidateInfoListResponse(
 
     @Builder
     public record CandidateInfoResponse(
+            Long id,
             String candidateName,
             String candidateContactAddress,
             String candidateInfoImage,

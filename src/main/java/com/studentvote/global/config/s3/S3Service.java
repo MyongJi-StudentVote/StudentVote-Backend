@@ -61,4 +61,14 @@ public class S3Service {
         }
     }
 
+    public void deleteImageFromS3(String imageUrl) {
+        try {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            amazonS3.deleteObject(bucket, fileName);
+        } catch (Exception e) {
+            throw new RuntimeException("Image delete failed", e);
+        }
+    }
+
+
 }

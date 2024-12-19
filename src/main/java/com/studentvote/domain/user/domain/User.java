@@ -1,13 +1,8 @@
 package com.studentvote.domain.user.domain;
 
+import com.studentvote.domain.candidateInfo.domain.CandidateInfo;
 import com.studentvote.domain.common.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +29,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private CandidateInfo candidateInfo;
 
     private User(String email, String password, String name) {
         this.email = email;
