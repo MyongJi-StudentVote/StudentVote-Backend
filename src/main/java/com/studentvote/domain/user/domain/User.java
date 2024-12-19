@@ -43,6 +43,10 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.PENDING;
     }
 
+    public void updateApprovalStatus(ApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
     public static User of(String email, String password, String name) {
         return new User(email, password, name);
     }
