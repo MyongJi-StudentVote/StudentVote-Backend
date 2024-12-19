@@ -37,7 +37,7 @@ public class PosterController {
         return ResponseCustom.OK(new GetPosterResponse(poster.getId(), poster.getPosterName(), poster.getPosterImage()));
     }
 
-    @GetMapping("/poster/{governanceType}")
+    @GetMapping("/poster/governance/{governanceType}")
     public ResponseCustom<GetAllPosterResponse> getAllPosterByGovernance(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable String governanceType) {
         GetAllPosterResponse posterList = posterService.getAllPosterByGovernance(userDetails, governanceType);
         return ResponseCustom.OK(posterList);
