@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,11 +28,14 @@ public class VoteInformation extends BaseEntity {
     private String guideImageUrl;
 
 
-    @Builder
     public VoteInformation(String name, String dateTime, String description, String guideImageUrl) {
         this.name = name;
         this.dateTime = dateTime;
         this.description = description;
         this.guideImageUrl = guideImageUrl;
+    }
+
+    public static VoteInformation of(String name, String dateTime, String description, String guideImageUrl) {
+        return new VoteInformation(name, dateTime, description, guideImageUrl);
     }
 }
