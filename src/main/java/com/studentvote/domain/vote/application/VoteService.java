@@ -17,6 +17,7 @@ import com.studentvote.domain.vote.dto.request.RegisterVoteRateRequest;
 import com.studentvote.domain.vote.dto.response.GetRateResponse;
 import com.studentvote.domain.vote.dto.response.GetResultResponse;
 import com.studentvote.domain.vote.exception.AlreadyExistVoteInformationException;
+import com.studentvote.domain.vote.exception.AlreadyExistVoteResultException;
 import com.studentvote.global.config.s3.S3Service;
 import com.studentvote.global.payload.Message;
 import java.util.Optional;
@@ -136,6 +137,12 @@ public class VoteService {
         Governance governance = governanceRepository.findByVoteHeadquaterUserId(user.getId())
                 .orElseThrow(() -> new NullPointerException("해당하는 자치기구가 없습니다."));
 
+        Boolean existsedByGovernance = voteResultRepository.ExistsByGovernance(governance);
+
+        if (existsedByGovernance) {
+            throw new AlreadyExistVoteResultException();
+        }
+
         VoteResult voteResult = VoteResult.of(image, governance);
 
         voteResultRepository.save(voteResult);
@@ -147,6 +154,31 @@ public class VoteService {
     }
 
     public GetResultResponse getResult(Long governanceId) {
+        Governance governance = governanceRepository.findById(governanceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 자치기구 id가 유효하지 않습니다."));
+
+        Optional<VoteResult> optionalVoteResult = voteResultRepository.findByGovernance(governance);
+
+        String deptName = governance.getGovernanceName().isEmpty() ? governance.getGovernanceType() : governance.getGovernanceName();
+
+        if (optionalVoteResult.isPresent()) {
+            VoteResult voteResult = optionalVoteResult.get();
+
+
+            GetResultResponse getResultResponse = GetResultResponse
+                    .builder()
+                    .departmentName(deptName)
+                    .resultImageUrl(voteResult.getResultImage())
+                    .build();
+
+            return getResultResponse;
+        }
+
+        GetResultResponse
+                .builder()
+                .departmentName(deptName)
+                .resultImageUrl(null)
+                .build();
         return null;
     }
 }
