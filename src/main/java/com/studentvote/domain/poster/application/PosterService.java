@@ -15,6 +15,7 @@ import com.studentvote.global.error.DefaultException;
 import com.studentvote.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class PosterService {
     private final PosterRepository posterRepository;
     private final S3Service s3Service;
 
+    @Transactional
     public RegisterPosterResponse registerPoster(CustomUserDetails userDetails, RegisterPosterRequest request) {
         validateUploadRequest(request);
         User user = userDetails.user();
@@ -42,9 +44,9 @@ public class PosterService {
 
     private String makeFileName(User user, String option) {
         String fileName = "posters/" + user.getId() + "/";
-        if (option == "candidateInfoImage") {
+        if (option.equals("candidateInfoImage")) {
             fileName += "candidateInfoImage";
-        } else if (option == "logoInfoImage") {
+        } else if (option.equals("logoInfoImage")) {
             fileName += "logoInfoImage";
         }
         return fileName;
