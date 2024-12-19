@@ -17,19 +17,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/v1")
 public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @PostMapping("/candidateInfo/")
+    @PostMapping("/candidateInfo")
+    @Operation(summary = "단과대별 후보자 기본 정보 입력", description = "입후보자 등록에 사용되는 API입니다. 선거유형, 선본명, 선본통신공간주소, 입후보자 공고 이미지, 로고이미지 입니다. 선거유형은 [단선 (UNCONTESTED_ELECTION) ,경선 (PRIMARY_ELECTION) String 값으로 둘중 하나 넣어주시면 됩니다], ")
     public ResponseCustom<RegisterCandidateInfoResponse> registerPoster(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute RegisterCandidateInfoRequest request) {
         RegisterCandidateInfoResponse registerCandidateInfoResponse = candidateService.registerCandidate(userDetails, request);
         return ResponseCustom.OK(registerCandidateInfoResponse);
     }
 
     @GetMapping("/candidateInfo/{governance}")
-    @Operation(summary = "단과대별 후보자 정보 조회", description = "사용자의 거버넌스 타입에 따른 후보자 정보를 조회합니다.")
+    @Operation(summary = "단과대별 후보자 기본 정보 조회", description = "단과대학 타입을 입력하면 후보자 기본정보(선거유형, 선본명, 선본통신공간주소, 입후보자 공고 이미지, 로고이미지)를 조회합니다.")
     public ResponseCustom<CandidateInfoListResponse> getCandidateInfo(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("governance") String governanceType) {
         CandidateInfoListResponse candidateInfo = candidateService.getCandidateInfo(userDetails, governanceType);
         return ResponseCustom.OK(candidateInfo);
