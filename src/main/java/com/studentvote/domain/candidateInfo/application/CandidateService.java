@@ -41,10 +41,9 @@ public class CandidateService {
     }
 
     @Transactional(readOnly = true)
-    public CandidateInfoListResponse getCandidateInfo(CustomUserDetails userDetails,String governanceType) {
-        User user = userDetails.user();
+    public CandidateInfoListResponse getCandidateInfo(String governanceId) {
         List<CandidateInfo> candidateInfoList = candidateInfoRepository
-                .findAllCandidateByGovernanceType(user.getId(), governanceType);
+                .findAllByGovernanceId(governanceId);
 
         if (candidateInfoList.isEmpty()) throw new DefaultException(ErrorCode.CANDIDATE_INFO_NOT_FOUND);
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("/api/v1")
 public class CandidateController {
 
     private final CandidateService candidateService;
@@ -29,12 +29,10 @@ public class CandidateController {
         return ResponseCustom.OK(registerCandidateInfoResponse);
     }
 
-    @GetMapping("/candidateInfo/{governance}")
+    @GetMapping("/candidateInfo/{governanceId}")
     @Operation(summary = "단과대별 후보자 기본 정보 조회", description = "단과대학 타입을 입력하면 후보자 기본정보(선거유형, 선본명, 선본통신공간주소, 입후보자 공고 이미지, 로고이미지)를 조회합니다.")
-    public ResponseCustom<CandidateInfoListResponse> getCandidateInfo(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("governance") String governanceType) {
-        CandidateInfoListResponse candidateInfo = candidateService.getCandidateInfo(userDetails, governanceType);
+    public ResponseCustom<CandidateInfoListResponse> getCandidateInfo(@PathVariable("governanceId") String governanceId) {
+        CandidateInfoListResponse candidateInfo = candidateService.getCandidateInfo(governanceId);
         return ResponseCustom.OK(candidateInfo);
     }
-
-
 }
