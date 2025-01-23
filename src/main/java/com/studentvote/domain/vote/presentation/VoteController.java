@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/vote")
 public class VoteController {
-
+//
     private final VoteService voteService;
 
     @Operation(summary = "선거 메타데이터 등록", description = "선거 관련 정보를 등록합니다.")
