@@ -4,7 +4,9 @@ import com.studentvote.domain.auth.domain.Token;
 import com.studentvote.domain.auth.domain.repository.TokenRepository;
 import com.studentvote.domain.auth.dto.request.SignInRequest;
 import com.studentvote.domain.auth.dto.request.SignUpRequest;
+import com.studentvote.domain.auth.dto.response.CustomUserDetails;
 import com.studentvote.domain.auth.dto.response.SignInResponse;
+import com.studentvote.domain.auth.dto.response.WhoAmIResponse;
 import com.studentvote.domain.auth.exception.AlreadyExistIdException;
 import com.studentvote.domain.auth.exception.EmailNotFoundException;
 import com.studentvote.domain.auth.exception.InvalidPasswordException;
@@ -99,5 +101,21 @@ public class AuthService {
                 .build();
 
         return signInResponse;
+    }
+
+    public WhoAmIResponse whoAmI(CustomUserDetails userDetails) {
+
+        User user = userRepository.findByEmail(userDetails.user().getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 유저입니다."));
+
+        WhoAmIResponse whoAmIResponse = WhoAmIResponse.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .userName(user.getUsername())
+                .governanceId(user.getGovernance().getId())
+                .governanceName(user.getGovernance().getGovernanceName())
+                .build();
+
+        return whoAmIResponse;
     }
 }
