@@ -6,6 +6,7 @@ import com.studentvote.domain.vote.dto.request.CreateVoteRequest;
 import com.studentvote.domain.vote.dto.request.RegisterVoteRateRequest;
 import com.studentvote.domain.vote.dto.response.GetRateResponse;
 import com.studentvote.domain.vote.dto.response.GetResultResponse;
+import com.studentvote.domain.vote.dto.response.GetVoteMetadataResponse;
 import com.studentvote.global.payload.Message;
 import com.studentvote.global.payload.ResponseCustom;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/vote")
 public class VoteController {
-//
+
     private final VoteService voteService;
 
     @Operation(summary = "선거 메타데이터 등록", description = "선거 관련 정보를 등록합니다.")
@@ -40,6 +41,12 @@ public class VoteController {
             @ModelAttribute CreateVoteRequest createVoteRequest
     ) {
         return ResponseCustom.OK(voteService.createVote(userDetails, createVoteRequest));
+    }
+
+    @Operation(summary = "선거 메타데이터 조회", description = "선거 관련 정보를 조회합니다.")
+    @GetMapping("/metadata")
+    public ResponseCustom<GetVoteMetadataResponse> getVoteMetadata() {
+        return ResponseCustom.OK(voteService.getVoteMetadata());
     }
 
     @Operation(summary = "선거 초기화", description = "선거 관련 데이터를 초기화힙니다.")
