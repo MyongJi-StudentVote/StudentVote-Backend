@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -118,12 +117,22 @@ public class VoteService {
                 .build();
     }
 
-    public Page<GetRateResponse> getRate(Long departmentId, Pageable pageable) {
+    public List<GetRateResponse> getRate(Long departmentId) {
 
         Governance governance = governanceRepository.findById(departmentId)
                 .orElseThrow(() -> new NullPointerException("해당 학과/단과대를 찾을 수 없습니다."));
 
-        Page<GetRateResponse> getRateResponses = voteRepository.findAllByGovernance(governance, pageable);
+        List<Vote> votes = voteRepository.findAllByGovernance(governance);
+
+        List<GetRateResponse> getRateResponses = votes.stream()
+                .map(
+                        vote -> GetRateResponse.builder()
+                                .voteRate(vote.getVoteRate())
+                                .localDateTime(vote.getCreatedAt())
+                                .voteCount(vote.getVoteCount())
+                                .build()
+                )
+                .toList();
 
         return getRateResponses;
     }

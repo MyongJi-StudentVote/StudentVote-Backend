@@ -11,6 +11,7 @@ import com.studentvote.global.payload.Message;
 import com.studentvote.global.payload.ResponseCustom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,11 +68,10 @@ public class VoteController {
 
     @Operation(summary = "투표율 조회", description = "선거(단과대/학과) 별 투표율을 조회합니다.")
     @GetMapping("/rate/{departmentId}")
-    public ResponseCustom<Page<GetRateResponse>> getRate(
-            @PathVariable Long departmentId,
-            @PageableDefault(size = 10, page = 0) Pageable pageable
+    public ResponseCustom<List<GetRateResponse>> getRate(
+            @PathVariable Long departmentId
     ) {
-        return ResponseCustom.OK(voteService.getRate(departmentId, pageable));
+        return ResponseCustom.OK(voteService.getRate(departmentId));
     }
 
     @Operation(summary = "개표 결과 등록", description = "각 단과대/학과 별로 개표 결과를 등록합니다.")
