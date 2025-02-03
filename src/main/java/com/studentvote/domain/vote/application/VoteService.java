@@ -16,10 +16,12 @@ import com.studentvote.domain.vote.dto.request.CreateVoteRequest;
 import com.studentvote.domain.vote.dto.request.RegisterVoteRateRequest;
 import com.studentvote.domain.vote.dto.response.GetRateResponse;
 import com.studentvote.domain.vote.dto.response.GetResultResponse;
+import com.studentvote.domain.vote.dto.response.GetVoteMetadataResponse;
 import com.studentvote.domain.vote.exception.AlreadyExistVoteInformationException;
 import com.studentvote.domain.vote.exception.AlreadyExistVoteResultException;
 import com.studentvote.global.config.s3.S3Service;
 import com.studentvote.global.payload.Message;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -180,5 +182,19 @@ public class VoteService {
                 .resultImageUrl(null)
                 .build();
         return null;
+    }
+
+    public GetVoteMetadataResponse getVoteMetadata() {
+        List<VoteInformation> voteInformations = voteInformationRepository.findAll();
+
+        VoteInformation voteInformation = voteInformations.get(0);
+
+        GetVoteMetadataResponse getVoteMetadataResponse = GetVoteMetadataResponse.builder()
+                .voteName(voteInformation.getName())
+                .voteDateTime(voteInformation.getDateTime())
+                .voteDescription(voteInformation.getDescription())
+                .fileUrl(voteInformation.getGuideImageUrl())
+                .build();
+        return getVoteMetadataResponse;
     }
 }
