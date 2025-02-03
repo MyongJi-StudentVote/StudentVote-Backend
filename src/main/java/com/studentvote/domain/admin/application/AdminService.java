@@ -48,7 +48,7 @@ public class AdminService {
                 .collect(Collectors.toList());
 
         return accountsWaitingForApprovalResponses;
-    }
+    }//
 
     @Transactional
     public Message admitUser(CustomUserDetails userDetails, Long userId) {
